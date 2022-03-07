@@ -1,0 +1,22 @@
+{
+  "name": "reaway/net",
+  "type": "library",
+  "description": "net",
+  "keywords": [],
+  "homepage": "https://github.com/reaway/net",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "reaway",
+      "email": "reaway@foxmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Reaway\\Net\\": "src/"
+    }
+  }
+}
