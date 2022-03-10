@@ -18,7 +18,7 @@ class Sftp
      */
     private array $config = [
         'host' => '127.0.0.1',
-        'port' => '22',
+        'port' => 22,
         'username' => '',
         'password' => '',
         'use_public_key' => false,
@@ -142,6 +142,6 @@ class Sftp
 
     public function __destruct()
     {
-        $this->disconnect();
+        //$this->disconnect();
     }
 }

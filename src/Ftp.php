@@ -6,7 +6,7 @@ use Exception;
 
 class Ftp
 {
-    static private $_instance = null;
+    static private ?Ftp $_instance = null;
     private $ftp = null;
 
     /**
@@ -14,7 +14,7 @@ class Ftp
      * @var array
      */
     public $config = [
-        'host' => '127.0.0.1',
+        'host' => '',
         'port' => 21,
         'timeout' => 90,
         'username' => '',
@@ -23,7 +23,6 @@ class Ftp
     ];
 
     /**
-     * Ftp constructor.
      * @param array $config
      * @throws Exception
      */
@@ -53,67 +52,66 @@ class Ftp
         }
     }
 
-    /**
-     * Ftp destructor
-     */
     public function __destruct()
     {
+        $this->close();
     }
 
     /**
      * 公有的静态方法
      * @param $config
-     * @return FtpFile|null
+     * @return Ftp|null
+     * @throws Exception
      */
-    static public function getInstance($config)
+    static public function getInstance($config): ?Ftp
     {
         if (!(self::$_instance instanceof self)) {
-            self::$_instance = new FtpFile($config);
+            self::$_instance = new Ftp($config);
         }
         return self::$_instance;
     }
 
     /**
      * 上传文件
-     * @param $remote_file
-     * @param $local_file
+     * @param string $remote_file
+     * @param string $local_file
      * @param int $mode
      * @return bool
      */
-    function upload($remote_file, $local_file, $mode = FTP_BINARY)
+    function upload(string $remote_file, string $local_file, int $mode = FTP_BINARY): bool
     {
         return ftp_put($this->ftp, $remote_file, $local_file, $mode);
     }
 
     /**
      * 返回给定目录的文件列表
-     * @param $directory
+     * @param string $directory
      * @return array
      */
-    function list($directory = '/')
+    function list(string $directory = '/'): array
     {
-        return $contents = ftp_nlist($this->ftp, $directory);
+        return ftp_nlist($this->ftp, $directory);
     }
 
     /**
      * 移动文件
-     * @param $oldname
-     * @param $newname
+     * @param string $from
+     * @param string $to
      * @return bool
      */
-    function move($oldname, $newname)
+    function move(string $from, string $to): bool
     {
-        return ftp_rename($this->ftp, $oldname, $newname);
+        return ftp_rename($this->ftp, $from, $to);
     }
 
     /**
      * 删除文件
-     * @param $path
+     * @param string $filename
      * @return bool
      */
-    function delete($path)
+    function delete(string $filename): bool
     {
-        return ftp_delete($this->ftp, $path);
+        return ftp_delete($this->ftp, $filename);
     }
 
     /**
@@ -137,7 +135,7 @@ class Ftp
             }
         }
 
-        for ($i = 1; $i <= $path_div; $i++)         // 回退到根
+        for ($i = 1; $i <= $path_div; $i++) // 回退到根
         {
             @ftp_cdup($this->ftp);
         }
